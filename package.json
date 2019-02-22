@@ -1,7 +1,7 @@
 {
   "name": "numeric-stepper",
   "version": "0.1.0",
-  "description": "React 实现的数值进步器",
+  "description": "React 实现的数值计步器组件",
   "main": "index.js",
   "keywords": [
     "react",
@@ -13,7 +13,7 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/bluesliu/numeric-stepper.git"
   },
   "dependencies": {
     "prop-types": "^15.7.2",

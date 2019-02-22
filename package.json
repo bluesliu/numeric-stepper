@@ -1,0 +1,39 @@
+{
+  "name": "numeric-stepper",
+  "version": "0.1.0",
+  "description": "React 实现的数值进步器",
+  "main": "index.js",
+  "keywords": [
+    "react",
+    "numeric",
+    "stepper",
+    "drag"
+  ],
+  "author": "blues",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "dependencies": {
+    "prop-types": "^15.7.2",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "react-scripts": "2.1.5"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}

@@ -1,10 +1,20 @@
 import React, {Component} from "react";
 import PropTypes from "prop-types";
+import mouseHandler from "react-mouse-handler";
+
+class DragAbleLabel extends Component{
+    render() {
+        return (
+            <span>{this.props.value}</span>
+        );
+    }
+}
+DragAbleLabel = mouseHandler(DragAbleLabel);
 
 export default class NumericStepper extends Component {
 
     static propTypes = {
-        onUpdate: PropTypes.func.isRequired,
+        onUpdate: PropTypes.func,
         min: PropTypes.number,
         max: PropTypes.number,
         value: PropTypes.number,
@@ -15,6 +25,7 @@ export default class NumericStepper extends Component {
         fontSize: PropTypes.string,
         color: PropTypes.string,
         underlineColor: PropTypes.string,
+        underlineColor_over: PropTypes.string,
     };
 
     static defaultProps = {
@@ -26,11 +37,25 @@ export default class NumericStepper extends Component {
         height: "100%",
         fontSize: "14px",
         color: "#fcfcfc",
-        underlineColor: "#c6c6c6",
+        underlineColor: "#b5b5b5",
+        underlineColor_over: "#e8e8e8",
+    };
+
+    state = {
+        isOver: false,
+        isActive: false,
+        inputValue: "",
+
+        value: 0
     };
 
     constructor(props) {
         super(props);
+
+        this.onDragHandler = this.onDragHandler.bind(this);
+        this.onClickHandler = this.onClickHandler.bind(this);
+        this.onMouseOverHandler = this.onMouseOverHandler.bind(this);
+        this.onMouseOutHandler = this.onMouseOutHandler.bind(this);
 
         let {min, max, value} = this.props;
         if (min > max) {
@@ -46,16 +71,10 @@ export default class NumericStepper extends Component {
             }
         }
 
-        this.state = {
-            isDown: false,
-            isActive: false,
-            inputValue: "",
+        this.state.value = value;
 
-            max: max,
-            min: min,
-            value: value
-        };
-
+        this.max = max;
+        this.min = min;
         this.lastX = 0;
 
         //input
@@ -105,24 +124,28 @@ export default class NumericStepper extends Component {
         const {isActive, value} = this.state;
         if (isActive) return null;
         return (
-            <label
+            <DragAbleLabel
+                cursor="ew-resize"
+                canDrag={true}
+                value={this.formatValue(value)}
+                onDrag={this.onDragHandler}
+                onClick={this.onClickHandler}
+                onMouseOver={this.onMouseOverHandler}
+                onMouseOut={this.onMouseOutHandler}
                 style={this.getLabelStyle()}
-                onPointerDown={(e) => {
-                    this.onMouseDownHandler(e);
-                }}
-                onPointerMove={(e) => {
-                    this.onMouseMoveHandler(e);
-                }}
-                onPointerUp={(e) => {
-                    this.onMouseUpHandler(e);
-                }}
-                onClick={(e) => {
-                    this.onClickHandler(e);
-                }}
-            >
-                {this.formatValue(value)}
-            </label>
-        );
+            />
+        )
+    }
+
+    onDragHandler(e, position){
+        const {dx, globalX} = position;
+        if (Math.abs(this.lastX-globalX) < 3) return;
+        this.lastX = globalX;
+        if (dx > 0) {
+            this.addStep();
+        } else {
+            this.subStep();
+        }
     }
 
     //开始输入
@@ -145,55 +168,27 @@ export default class NumericStepper extends Component {
     }
 
     //激活输入
-    onClickHandler(e) {
+    onClickHandler() {
         this.selectAll = true;
         this.setState({
             ...this.state,
             isActive: true,
-            inputValue: this.formatValue(this.state.value)
+            inputValue: this.formatValue(this.state.value),
+        });
+    }
+
+    onMouseOverHandler() {
+        this.setState({
+            ...this.state,
+            isOver: true
         })
     }
 
-    onMouseDownHandler(e) {
-        /* api see : https://developer.mozilla.org/zh-CN/docs/Web/API/Element/setPointerCapture
-                     http://www.webfront-js.com/articaldetail/37.html
-        */
-        e.target.setPointerCapture(e.pointerId);
-
-        //改变全局鼠标样式
-        document.body.style.cursor = "ew-resize";
-
-        this.lastX = e.pageX;
+    onMouseOutHandler(){
         this.setState({
             ...this.state,
-            isDown: true
-        });
-    }
-
-    onMouseUpHandler(e) {
-        e.target.releasePointerCapture(e.pointerId);
-
-        //恢复全局鼠标样式
-        document.body.style.cursor = "auto";
-
-        this.setState({
-            ...this.state,
-            isDown: false
-        });
-    }
-
-    onMouseMoveHandler(e) {
-        if (!this.state.isDown) {
-            return;
-        }
-        const dx = e.pageX - this.lastX;
-        if (Math.abs(dx) < 3) return;
-        this.lastX = e.pageX;
-        if (dx > 0) {
-            this.addStep();
-        } else {
-            this.subStep();
-        }
+            isOver: false
+        })
     }
 
     addStep() {
@@ -209,7 +204,7 @@ export default class NumericStepper extends Component {
         if (isNaN(newValue)) {
             newValue = 0;
         }
-        const {min, max} = this.state;
+        const {min, max} = this;
         if (newValue > max) {
             newValue = max;
         } else if (newValue < min) {
@@ -221,7 +216,9 @@ export default class NumericStepper extends Component {
             isActive: false,
             inputValue: "",
         });
-        this.props.onUpdate.call(this, newValue);
+        if(this.props.onUpdate){
+            this.props.onUpdate.call(this, newValue);
+        }
     }
 
     /**
@@ -241,7 +238,6 @@ export default class NumericStepper extends Component {
         const {fontSize} = this.props;
         const style = {};
         style.width = "100%";
-        // style.height = "100%";
         style.fontSize = fontSize;
         style.color = "#000000";
         style.outline = "none";
@@ -253,7 +249,8 @@ export default class NumericStepper extends Component {
     }
 
     getLabelStyle() {
-        const {fontSize, color, underlineColor} = this.props;
+        const {fontSize, color, underlineColor, underlineColor_over} = this.props;
+        const {isOver} = this.state;
         const style = {};
         style.userSelect = "none";
         style.WebkitUserSelect = "none";
@@ -263,13 +260,15 @@ export default class NumericStepper extends Component {
         style.fontSize = fontSize;
         style.color = color;
 
-        style.width = "100%";
-        style.height = "100%";
+        // style.width = "100%";
+        // style.height = "100%";
+        style.width = "fit-content";
+        style.margin = 0;
+        style.padding = 0;
 
         style.borderWidth = "1px";
         style.borderStyle = "none none dotted none";
-        style.borderColor = underlineColor;
-        style.cursor = "ew-resize";
+        style.borderColor = isOver?underlineColor_over:underlineColor;
         return style;
     }
 

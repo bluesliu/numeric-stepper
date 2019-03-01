@@ -1,39 +1,42 @@
 {
   "name": "numeric-stepper",
-  "version": "0.1.0",
-  "description": "React 实现的数值计步器组件",
-  "main": "./src/index.js",
+  "version": "0.2.0",
+  "description": "同时支持拖拽和输入的数字计步器 React 组件",
+  "main": "lib/index.js",
+  "jsnext:main": "src/index.js",
+  "scripts": {
+    "start": "webpack-dev-server",
+    "build": "webpack --config webpack.build.js",
+    "pub": "npm publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
   "keywords": [
     "react",
-    "numeric",
     "stepper",
-    "drag"
+    "drag",
+    "input"
   ],
   "author": "blues",
   "license": "ISC",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/bluesliu/numeric-stepper.git"
-  },
-  "dependencies": {
+  "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "@babel/plugin-proposal-class-properties": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.5",
+    "html-webpack-plugin": "^3.2.0",
     "prop-types": "^15.7.2",
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
-    "react-scripts": "2.1.5"
+    "webpack": "^4.29.5",
+    "webpack-cli": "^3.2.3",
+    "webpack-dev-server": "^3.2.1"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+  "peerDependencies": {},
+  "dependencies": {
+    "react": "^16.8.3",
+    "react-dom": "^16.8.3",
+    "react-mouse-handler": "^0.4.2"
+  }
 }

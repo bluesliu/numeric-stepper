@@ -1,5 +1,3 @@
 import NumericStepper from "./NumericStepper";
 
-export {
-    NumericStepper
-}
+export default NumericStepper;

@@ -1,6 +1,6 @@
 {
   "name": "numeric-stepper",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "同时支持拖拽和输入的数字计步器 React 组件",
   "main": "lib/index.js",
   "jsnext:main": "src/index.js",
@@ -37,6 +37,6 @@
   "dependencies": {
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
-    "react-mouse-handler": "^0.4.2"
+    "react-mouse-handler": "^0.4.4"
   }
 }

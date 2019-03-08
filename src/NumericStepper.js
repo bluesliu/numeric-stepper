@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import PropTypes from "prop-types";
-import mouseHandler from "react-mouse-handler";
+import {mouseHandler} from "react-mouse-handler";
 
 class DragAbleLabel extends Component{
     render() {
@@ -9,7 +9,7 @@ class DragAbleLabel extends Component{
         );
     }
 }
-DragAbleLabel = mouseHandler(DragAbleLabel);
+DragAbleLabel = mouseHandler()(DragAbleLabel);
 
 export default class NumericStepper extends Component {
 
